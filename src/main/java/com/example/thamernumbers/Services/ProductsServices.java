@@ -16,13 +16,15 @@ public class ProductsServices {
 
     //  this method ==>  gets all products record from Repository ==> table
     public List<Product> getAllProducts() {
-        List<Product> products = productsRepository.findAll();
-       return products;
+        List<Product> products;
+        products = productsRepository.findAll();
+        return products;
     }
 
     // in this method we will get product By ID
     public Product getProductById(Integer id) {
-        Product product = productsRepository.getProductsById(id);
+        Product product;
+        product = productsRepository.getProductsById(id);
         return product;
     }
 

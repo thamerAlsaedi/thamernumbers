@@ -1,5 +1,4 @@
 package com.example.thamernumbers.Controllers;
-
 import com.example.thamernumbers.ApiResponse.ApiResponse;
 import com.example.thamernumbers.DTOsOut.CafeDTOsOut;
 import com.example.thamernumbers.Models.Cafe;
@@ -7,13 +6,8 @@ import com.example.thamernumbers.Services.CafesServices;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindingResult;
-import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
-import java.util.stream.Collectors;
-
 @RestController
 @RequestMapping("/api/v1/cafe")
 @RequiredArgsConstructor
@@ -27,8 +21,8 @@ public class CafesController {
      */
     @GetMapping("/get-all")
     public List<CafeDTOsOut> getAllCafes() {
-        List<CafeDTOsOut> cafes = cafesServices.getAllCafes();
-        return cafes;
+        List<CafeDTOsOut> cafe = cafesServices.getAllCafes();
+        return cafe;
     }
 
     /*
