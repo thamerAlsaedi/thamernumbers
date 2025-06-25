@@ -15,7 +15,7 @@ import lombok.NoArgsConstructor;
 
 @NoArgsConstructor
 @Entity
-public class Products {
+public class Product {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -30,10 +30,10 @@ public class Products {
 
     @ManyToOne
     @JsonIgnore
-    private Beans bean;
+    private Bean bean;
 
     @ManyToOne
     @JsonIgnore
-    private Cafes cafe;
+    private Cafe cafe;
 
 }

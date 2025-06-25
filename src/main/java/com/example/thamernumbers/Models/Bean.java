@@ -6,14 +6,16 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-
 import java.util.Set;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-public class Cafes {
+
+
+public class Bean {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
@@ -21,14 +23,7 @@ public class Cafes {
     @Column(nullable = false)
     private String name;
 
-    @Column(nullable = false)
-    private String  city;
-
-    @Column(nullable = false)
-    private String address;
-
-    @OneToMany(mappedBy = "cafe", cascade = CascadeType.ALL)
-    private Set<Products> products;
-
+    @OneToMany(mappedBy = "bean", cascade = CascadeType.ALL)
+    private Set<Product> products;
 
 }

@@ -9,4 +9,5 @@ import lombok.*;
  
 public class ApiResponse {
     private String message;
+
 }

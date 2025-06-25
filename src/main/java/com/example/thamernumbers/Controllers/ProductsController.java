@@ -1,6 +1,6 @@
 package com.example.thamernumbers.Controllers;
 
-import com.example.thamernumbers.Models.Products;
+import com.example.thamernumbers.Models.Product;
 import com.example.thamernumbers.Services.ProductsServices;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,14 +18,14 @@ public class ProductsController {
     private final ProductsServices productsServices;
 
     @GetMapping("/get")
-    public List<Products> getAllProducts(){
-        List<Products> products = productsServices.getAllProducts();
+    public List<Product> getAllProducts(){
+        List<Product> products = productsServices.getAllProducts();
         return products;
     }
 
     @GetMapping("/get-by-id/{id}")
-    public Products getProductById(@PathVariable  Integer id){
-        Products product = productsServices.getProductById(id);
+    public Product getProductById(@PathVariable  Integer id){
+        Product product = productsServices.getProductById(id);
         return product;
     }
 

@@ -1,9 +1,9 @@
 package com.example.thamernumbers.Repositories;
 
-import com.example.thamernumbers.Models.Products;
+import com.example.thamernumbers.Models.Product;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface ProductsRepository extends JpaRepository<Products, Integer> {
+public interface ProductsRepository extends JpaRepository<Product, Integer> {
 
-    Products getProductsById(Integer id);
+    Product getProductsById(Integer id);
 }
