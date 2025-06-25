@@ -21,8 +21,7 @@ public class CafesController {
      */
     @GetMapping("/get-all")
     public List<CafeDTOsOut> getAllCafes() {
-        List<CafeDTOsOut> cafe = cafesServices.getAllCafes();
-        return cafe;
+        return cafesServices.getAllCafes();
     }
 
     /*

@@ -19,6 +19,8 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 import org.springframework.web.servlet.NoHandlerFoundException;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
 
+import java.util.Objects;
+
 @org.springframework.web.bind.annotation.ControllerAdvice
 public class ControllerAdvice {
     @ExceptionHandler(value = ApiException.class)
@@ -28,7 +30,7 @@ public class ControllerAdvice {
     }
     @ExceptionHandler(value = MethodArgumentNotValidException.class)
     public ResponseEntity<ApiResponse> MethodArgumentNotValidException(MethodArgumentNotValidException e) {
-        String message = e.getFieldError().getDefaultMessage();
+        String message = Objects.requireNonNull(e.getFieldError()).getDefaultMessage();
         return ResponseEntity.status(400).body(new ApiResponse(message));
     }
     @ExceptionHandler(value = HttpMessageNotReadableException.class)
