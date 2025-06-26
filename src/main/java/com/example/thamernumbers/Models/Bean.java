@@ -12,8 +12,7 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-
-
+@Table(name="Bean")
 public class Bean {
 
     @Id
