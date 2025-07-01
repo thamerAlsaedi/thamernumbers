@@ -56,14 +56,13 @@ public class CoffeeBeanServices {
         if (coffeeBean == null) {
             throw new ApiException("CoffeeBean not found");
         }
-        CoffeeBeanDTOsOut coffeeBeanDTOsOut = new CoffeeBeanDTOsOut(
+        return new CoffeeBeanDTOsOut(
                 coffeeBean.getCountry(),
                 coffeeBean.getVarietyName(),
                 coffeeBean.getBeanType(),
                 coffeeBean.getFlavorNotes(),
                 coffeeBean.getPopularity()
         );
-        return coffeeBeanDTOsOut;
     }
 
     /**

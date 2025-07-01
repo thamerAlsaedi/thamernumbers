@@ -19,13 +19,15 @@ public class ProductsController {
 
     @GetMapping("/get-all")
     public List<Product> getAllProducts(){
-        List<Product> products = productsServices.getAllProducts();
+        List<Product> products;
+        products = productsServices.getAllProducts();
         return products;
     }
 
     @GetMapping("/get-by-id/{id}")
     public Product getProductById(@PathVariable  Integer id){
-        Product product = productsServices.getProductById(id);
+        Product product;
+        product = productsServices.getProductById(id);
         return product;
     }
 }
