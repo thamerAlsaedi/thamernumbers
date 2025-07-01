@@ -1,13 +1,11 @@
 package com.example.thamernumbers.ApiResponse;
 
-
 import lombok.*;
 
-@Data
-@AllArgsConstructor
+@Getter
+@Setter
 @NoArgsConstructor
- 
+@AllArgsConstructor
 public class ApiResponse {
     private String message;
-
 }

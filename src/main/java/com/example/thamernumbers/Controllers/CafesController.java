@@ -1,4 +1,5 @@
 package com.example.thamernumbers.Controllers;
+import com.example.thamernumbers.ApiResponse.ApiException;
 import com.example.thamernumbers.ApiResponse.ApiResponse;
 import com.example.thamernumbers.DTOsOut.CafeDTOsOut;
 import com.example.thamernumbers.Models.Cafe;
@@ -8,6 +9,24 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
+/**
+ * REST controller for managing café-related operations.
+ * <p>
+ * This controller provides endpoints for:
+ * <ul>
+ *     <li>Retrieving all cafés</li>
+ *     <li>Retrieving a café by ID, city, or name</li>
+ *     <li>Adding a new café</li>
+ *     <li>Updating existing café information</li>
+ *     <li>Deleting a café</li>
+ * </ul>
+ * All logic is delegated to the {@link CafesServices} class, which handles the business operations.
+ * <p>
+ * Base path for all endpoints: <b>/api/v1/cafe</b>
+ *
+ * @author Thamer
+ * @since 1.0
+ */
 @RestController
 @RequestMapping("/api/v1/cafe")
 @RequiredArgsConstructor
@@ -43,6 +62,42 @@ public class CafesController {
         CafeDTOsOut cafe = cafesServices.getCafesById(CafeId);
         return ResponseEntity.ok(cafe);
     }
+
+    /**
+     * Endpoint to retrieve a café by city name.
+     * <p>
+     * This REST endpoint receives a city name as a path variable and returns
+     * the corresponding café details wrapped in a ResponseEntity.
+     * If no café is found for the given city, an ApiException will be thrown from the service layer.
+     *
+     * @param CafeCity the name of the city to search for a café
+     * @return ResponseEntity containing a CafeDTOsOut object with the café's details
+     * @throws ApiException if no café is found in the specified city
+     */
+    @GetMapping("/get-by-city/{CafeCity}")
+    public ResponseEntity<List<CafeDTOsOut>> getCafeByCity(@PathVariable String CafeCity){
+        List<CafeDTOsOut> cafe = cafesServices.getCafesByCity(CafeCity);
+        return ResponseEntity.ok(cafe);
+    }
+
+    /**
+     * Endpoint to retrieve a café by its name.
+     * <p>
+     * This REST endpoint accepts a café name as a path variable and returns
+     * the corresponding café details as a {@link CafeDTOsOut} object.
+     * If no café is found with the given name, an {@link ApiException} will be thrown
+     * from the service layer.
+     *
+     * @param CafeName the name of the café to retrieve
+     * @return a {@link ResponseEntity} containing the café's details
+     * @throws ApiException if no café is found with the specified name
+     */
+    @GetMapping("/get-by-name/{CafeName}")
+    public ResponseEntity<CafeDTOsOut> getCafeByName(@PathVariable String CafeName){
+        CafeDTOsOut cafe = cafesServices.getCafesByName(CafeName);
+        return ResponseEntity.ok(cafe);
+    }
+
     /**
      * Adds a new cafe to the system.
      * <p>

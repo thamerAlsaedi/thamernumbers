@@ -10,9 +10,7 @@ import lombok.NoArgsConstructor;
 
 
 @Data
-
 @AllArgsConstructor
-
 @NoArgsConstructor
 @Entity
 @Table(name = "Product")
@@ -28,10 +26,9 @@ public class Product {
     @Column(nullable = false)
     private double price;
 
-
     @ManyToOne
     @JsonIgnore
-    private Bean bean;
+    private CoffeeBean coffeeBean;
 
     @ManyToOne
     @JsonIgnore

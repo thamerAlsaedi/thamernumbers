@@ -18,13 +18,19 @@ public class ProductsServices {
     public List<Product> getAllProducts() {
         List<Product> products;
         products = productsRepository.findAll();
+        if (products.isEmpty()) {
+            throw new ApiException("No products found");
+        }
         return products;
     }
 
     // in this method we will get product By ID
-    public Product getProductById(Integer id) {
+    public Product getProductById(Integer product_Id) {
         Product product;
-        product = productsRepository.getProductsById(id);
+        product = productsRepository.getProductsById(product_Id);
+        if (product == null) {
+            throw new ApiException("Product not found with id " + product_Id);
+        }
         return product;
     }
 
@@ -35,7 +41,7 @@ public class ProductsServices {
 
         existingProduct.setName(product.getName());
         existingProduct.setPrice(product.getPrice());
-        existingProduct.setBean(product.getBean());
+        existingProduct.setCoffeeBean(product.getCoffeeBean());
         existingProduct.setCafe(product.getCafe());
 
         productsRepository.save(existingProduct);

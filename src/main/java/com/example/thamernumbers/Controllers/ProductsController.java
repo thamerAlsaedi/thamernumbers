@@ -11,13 +11,13 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/v1/products")
+@RequestMapping("/api/v1/product")
 @RequiredArgsConstructor
 public class ProductsController {
 
     private final ProductsServices productsServices;
 
-    @GetMapping("/get")
+    @GetMapping("/get-all")
     public List<Product> getAllProducts(){
         List<Product> products = productsServices.getAllProducts();
         return products;
@@ -28,6 +28,4 @@ public class ProductsController {
         Product product = productsServices.getProductById(id);
         return product;
     }
-
-
 }

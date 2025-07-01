@@ -35,7 +35,9 @@ public class ControllerAdvice {
     }
     @ExceptionHandler(value = HttpMessageNotReadableException.class)
     public ResponseEntity<ApiResponse> HttpMessageNotReadableException(HttpMessageNotReadableException e) {
-        String message = e.getMessage();
+          String message = e.getMessage();
+         message = "Request body is missing or malformed. Please send valid JSON data.";
+
         return ResponseEntity.status(400).body(new ApiResponse(message));
     }
     @ExceptionHandler(value = NoResourceFoundException.class)
