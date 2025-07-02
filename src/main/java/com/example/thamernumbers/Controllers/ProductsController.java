@@ -1,12 +1,13 @@
 package com.example.thamernumbers.Controllers;
 
+import com.example.thamernumbers.ApiResponse.ApiResponse;
+import com.example.thamernumbers.DTOsOut.ProductDTOsOut;
 import com.example.thamernumbers.Models.Product;
 import com.example.thamernumbers.Services.ProductsServices;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -18,16 +19,27 @@ public class ProductsController {
     private final ProductsServices productsServices;
 
     @GetMapping("/get-all")
-    public List<Product> getAllProducts(){
-        List<Product> products;
+    public ResponseEntity<List<ProductDTOsOut>> getAllProducts(){
+        List<ProductDTOsOut> products;
         products = productsServices.getAllProducts();
-        return products;
+        return ResponseEntity.ok(products);
     }
 
     @GetMapping("/get-by-id/{id}")
-    public Product getProductById(@PathVariable  Integer id){
-        Product product;
+    public ResponseEntity<ProductDTOsOut> getProductById(@PathVariable  Integer id){
+        ProductDTOsOut product;
         product = productsServices.getProductById(id);
-        return product;
+        return  ResponseEntity.ok(product);
     }
+
+    @PostMapping("/add")
+    public ResponseEntity<ApiResponse> addProduct(@RequestBody @Valid Product product){
+        System.out.println((product.getCoffeeBean().getId()));
+        productsServices.addProduct(product);
+        return ResponseEntity.status(200).body( new ApiResponse("Successfully added product"));
+    }
+
+
+
+
 }

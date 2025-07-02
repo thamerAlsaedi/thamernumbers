@@ -1,5 +1,6 @@
 package com.example.thamernumbers.Models;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;
@@ -75,5 +76,6 @@ public class CoffeeBean {
      * One-to-many relationship with products that use this coffee bean.
      */
     @OneToMany(mappedBy = "coffeeBean", cascade = CascadeType.ALL)
+
     private Set<Product> products;
 }

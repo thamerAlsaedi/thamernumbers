@@ -8,6 +8,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
+
 /**
  * Service layer responsible for handling all business logic related to cafés.
  * <p>
@@ -28,18 +30,20 @@ public class CafesServices {
 
     private final CafesRepository cafesRepository;
 
+
     // in this method we retrieve all record from Cafés table
      public List<CafeDTOsOut> getAllCafes(){
          List<Cafe> cafes = cafesRepository.findAll();
          if(cafes.isEmpty()){
             throw new ApiException("No Cafes found");
          }
-          List<CafeDTOsOut> cafeDTOsOutList = new ArrayList<>();
-          for (Cafe cafe1 : cafes) {
-              CafeDTOsOut cafeDTOsOut = new CafeDTOsOut(cafe1.getId(),cafe1.getName(),cafe1.getAddress(),cafe1.getCity());
-              cafeDTOsOutList.add(cafeDTOsOut);
-          }
-        return cafeDTOsOutList;
+         return cafes.stream()
+                 .map(cafe -> new CafeDTOsOut(
+                         cafe.getId(),
+                         cafe.getName(),
+                         cafe.getCity(),     // make sure this matches your DTO constructor
+                         cafe.getAddress()))
+                 .collect(Collectors.toList());
     }
 
     /**
@@ -55,15 +59,17 @@ public class CafesServices {
      */
     public CafeDTOsOut getCafesById(Integer CafeId){
         Cafe cafe = cafesRepository.getCafesById(CafeId);
+
         if(cafe == null){
             throw new ApiException("Cafe not found with id: " + CafeId);
         }
-        CafeDTOsOut cafeDTOsOut = new CafeDTOsOut();
-        cafeDTOsOut.setId(cafe.getId());
-        cafeDTOsOut.setName(cafe.getName());
-        cafeDTOsOut.setCity(cafe.getCity());
-        cafeDTOsOut.setAddress(cafe.getAddress());
-        return cafeDTOsOut;
+
+        return new CafeDTOsOut(
+                cafe.getId(),
+                cafe.getName(),
+                cafe.getCity(),
+                cafe.getAddress()
+        );
     }
 
     /**
@@ -78,21 +84,19 @@ public class CafesServices {
      * @throws ApiException if no café is found in the provided city
      */
     public List<CafeDTOsOut> getCafesByCity(String CafeCity){
-        List<Cafe> cafe = cafesRepository.getCafeByCityContaining(CafeCity);
-        if(cafe.isEmpty()){
+        List<Cafe> cafes = cafesRepository.getCafeByCityContaining(CafeCity);
+        if(cafes.isEmpty()){
             throw new ApiException("Cafe not found with City: " + CafeCity);
         }
         List<CafeDTOsOut> cafeDTOsOutList = new ArrayList<>();
 
-        for(Cafe cafe1 : cafe){
-            CafeDTOsOut cafeDTO = new CafeDTOsOut();
-            cafeDTO.setId(cafe1.getId());
-            cafeDTO.setName(cafe1.getName());
-            cafeDTO.setAddress(cafe1.getAddress());
-            cafeDTO.setCity(cafe1.getCity());
-            cafeDTOsOutList.add(cafeDTO);
-        }
-        return cafeDTOsOutList;
+        return cafes.stream()
+                .map(cafe -> new CafeDTOsOut(
+                        cafe.getId(),
+                        cafe.getName(),
+                        cafe.getCity(),
+                        cafe.getAddress()))
+                .collect(Collectors.toList());
     }
 
     /**
@@ -107,16 +111,17 @@ public class CafesServices {
      * @throws ApiException if no café is found with the given name
      */
     public CafeDTOsOut getCafesByName(String CafeName){
+
         Cafe cafe = cafesRepository.getCafeByNameContaining(CafeName);
+
         if(cafe == null ){
             throw new ApiException("Cafe not found with Cafe Name: " + CafeName);
         }
-        CafeDTOsOut cafeDTOsOut = new CafeDTOsOut();
-        cafeDTOsOut.setId(cafe.getId());
-        cafeDTOsOut.setName(cafe.getName());
-        cafeDTOsOut.setCity(cafe.getCity());
-        cafeDTOsOut.setAddress(cafe.getAddress());
-        return cafeDTOsOut;
+        return new CafeDTOsOut(
+                        cafe.getId(),
+                        cafe.getName(),
+                        cafe.getCity(),
+                        cafe.getAddress());
     }
 
 
@@ -133,14 +138,15 @@ public class CafesServices {
     public void addCafe(Cafe newCafe) {
         List<Cafe> cafes;
         cafes = cafesRepository.findAll();
-        for (Cafe cafe1 : cafes) {
-            if (cafe1.getPhoneNumber().equals(newCafe.getPhoneNumber()) ) {
+        for (Cafe currentCafe : cafes) {
+
+            if (currentCafe.getPhoneNumber().equals(newCafe.getPhoneNumber()) ) {
                 throw new ApiException("PhoneNumber already exists");
             }
-            if(cafe1.getEmail().equals(newCafe.getEmail())){
+            if(currentCafe.getEmail().equals(newCafe.getEmail())){
                 throw new ApiException("Email already exists");
             }
-            if(cafe1.getCafe_cr().equals(newCafe.getCafe_cr())){
+            if(currentCafe.getCafe_cr().equals(newCafe.getCafe_cr())){
                 throw new ApiException("Cafe's Commercial Registration (CR)  already exists");
             }
         }
@@ -157,33 +163,36 @@ public class CafesServices {
      * Once validations pass, it updates the café's name, address, city, and products,
      * and saves the updated record to the database.
      *
-     * @param newUpdataCafe a Cafe object containing the updated details
+     * @param updatedCafe a Cafe object containing the updated details
      * @param cafeId the ID of the café to be updated
      * @throws ApiException if the café is not found, or if the updated phone number, email,
      *                      or CR already exists in another record
      */
-    public void updateCafe(Cafe newUpdataCafe, Integer cafeId){
+    public void updateCafe(Cafe updatedCafe, Integer cafeId) {
         Cafe existingCafe = cafesRepository.getCafesById(cafeId);
-        if(existingCafe == null){
+        if (existingCafe == null) {
             throw new ApiException("Cafe not found with id: " + cafeId);
         }
+
         List<Cafe> cafes = cafesRepository.findAll();
-        for (Cafe cafe1 : cafes) {
-            if (cafe1.getPhoneNumber().equals(newUpdataCafe.getPhoneNumber()) ) {
-                throw new ApiException("PhoneNumber already exists");
+        for (Cafe otherCafe : cafes) {
+            if (otherCafe.getId().equals(cafeId)) {
+                continue; // Skip the current cafe being updated
             }
-            if(cafe1.getEmail().equals(newUpdataCafe.getEmail())){
+
+            if (otherCafe.getPhoneNumber().equals(updatedCafe.getPhoneNumber())) {
+                throw new ApiException("Phone number already exists");
+            }
+
+            if (otherCafe.getEmail().equals(updatedCafe.getEmail())) {
                 throw new ApiException("Email already exists");
             }
-            if(cafe1.getCafe_cr().equals(newUpdataCafe.getCafe_cr())){
-                throw new ApiException("Cafe's Commercial Registration (CR)  already exists");
+
+            if (otherCafe.getCafe_cr().equals(updatedCafe.getCafe_cr())) {
+                throw new ApiException("Cafe's Commercial Registration (CR) already exists");
             }
         }
-        existingCafe.setName(newUpdataCafe.getName());
-        existingCafe.setAddress(newUpdataCafe.getAddress());
-        existingCafe.setCity(newUpdataCafe.getCity());
-        existingCafe.setProducts(newUpdataCafe.getProducts());
-         cafesRepository.save(existingCafe);
+
     }
 
     /**
