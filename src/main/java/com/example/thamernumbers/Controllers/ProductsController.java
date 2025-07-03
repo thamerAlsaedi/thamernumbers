@@ -1,6 +1,7 @@
 package com.example.thamernumbers.Controllers;
 
 import com.example.thamernumbers.ApiResponse.ApiResponse;
+import com.example.thamernumbers.DTOsIN.ProductDTOsIN;
 import com.example.thamernumbers.DTOsOut.ProductDTOsOut;
 import com.example.thamernumbers.Models.Product;
 import com.example.thamernumbers.Services.ProductsServices;
@@ -33,9 +34,9 @@ public class ProductsController {
     }
 
     @PostMapping("/add")
-    public ResponseEntity<ApiResponse> addProduct(@RequestBody @Valid Product product){
-        System.out.println((product.getCoffeeBean().getId()));
-        productsServices.addProduct(product);
+    public ResponseEntity<ApiResponse> addProduct(@RequestBody @Valid ProductDTOsIN productDTOsIN){
+
+        productsServices.addProduct(productDTOsIN);
         return ResponseEntity.status(200).body( new ApiResponse("Successfully added product"));
     }
 

@@ -1,6 +1,7 @@
 package com.example.thamernumbers.Services;
 
 import com.example.thamernumbers.ApiResponse.ApiException;
+import com.example.thamernumbers.DTOsIN.ProductDTOsIN;
 import com.example.thamernumbers.DTOsOut.ProductDTOsOut;
 import com.example.thamernumbers.Models.Cafe;
 import com.example.thamernumbers.Models.CoffeeBean;
@@ -74,38 +75,74 @@ public class ProductsServices {
     }
 
     /**
-     * Adds a new product after validating related entities and duplicates.
+     * Adds a new product to the system after validating input data,
+     * checking for duplicates, and fetching related entities.
      *
-     * @param product the product to add.
-     * @throws ApiException if required fields are missing,
-     *                      related entities do not exist,
-     *                      or a duplicate product already exists in the same cafe.
+     * @param productDTOsIN The input data transfer object containing
+     *                      product details including name, price,
+     *                      coffee bean ID, and cafe ID.
+     * @throws ApiException if any required field is missing, the product
+     *                      already exists, or related entities are not found.
      */
-    public void addProduct(Product product) {
+    public void addProduct(ProductDTOsIN productDTOsIN) {
+        // تحقق من المدخلات الأساسية
+        validateProductInput(productDTOsIN);
 
-        if (product.getCoffeeBean() == null || product.getCoffeeBean().getId() == null) {
+        // تحقق من التكرار
+        checkIfProductExists(productDTOsIN);
+
+        // جلب الكيانات المرتبطة
+        CoffeeBean coffeeBean = getCoffeeBeanById(productDTOsIN.getCoffeeBeanId());
+        Cafe cafe = getCafeById(productDTOsIN.getCafeId());
+
+        // إنشاء المنتج وحفظه
+        Product product = createProduct(productDTOsIN, coffeeBean, cafe);
+        productsRepository.save(product);
+    }
+
+      void validateProductInput(ProductDTOsIN productDTOsIN) {
+        if (productDTOsIN.getCoffeeBeanId() == null) {
             throw new ApiException("CoffeeBean is required and must include a valid ID");
         }
 
-        if (product.getCafe() == null || product.getCafe().getId() == null) {
+        if (productDTOsIN.getCafeId() == null) {
             throw new ApiException("Cafe is required and must include a valid ID");
         }
 
-        CoffeeBean coffeeBean = coffeeBeanRepository.findById(product.getCoffeeBean().getId())
-                .orElseThrow(() -> new ApiException("CoffeeBean not found"));
+        if (productDTOsIN.getName() == null || productDTOsIN.getName().trim().isEmpty()) {
+            throw new ApiException("Product name is required and must not be empty");
+        }
+    }
 
-        Cafe cafe = cafesRepository.findById(product.getCafe().getId())
-                .orElseThrow(() -> new ApiException("Cafe not found"));
+      void checkIfProductExists(ProductDTOsIN productDTOsIN) {
+        boolean productExists = productsRepository
+                .findByNameAndCafeId(productDTOsIN.getName(), productDTOsIN.getCafeId())
+                .isPresent();
 
-        if (productsRepository.findByNameAndCafeId(product.getName(), product.getCafe().getId()).isPresent()) {
+        if (productExists) {
             throw new ApiException("Product with the same name already exists in the same cafe");
         }
+    }
 
+    private CoffeeBean getCoffeeBeanById(Integer coffeeBeanId) {
+        return coffeeBeanRepository.findById(coffeeBeanId)
+                .orElseThrow(() -> new ApiException("CoffeeBean not found"));
+    }
+
+    private Cafe getCafeById(Integer cafeId) {
+        return cafesRepository.findById(cafeId)
+                .orElseThrow(() -> new ApiException("Cafe not found"));
+    }
+
+    private Product createProduct(ProductDTOsIN productDTOsIN, CoffeeBean coffeeBean, Cafe cafe) {
+        Product product = new Product();
+        product.setName(productDTOsIN.getName());
+        product.setPrice(productDTOsIN.getPrice());
         product.setCafe(cafe);
         product.setCoffeeBean(coffeeBean);
-
-        productsRepository.save(product);
+        return product;
     }
+
 
     /**
      * Updates an existing product.

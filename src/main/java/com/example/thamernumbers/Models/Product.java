@@ -28,11 +28,11 @@ public class Product {
     private double price;
 
     @ManyToOne
-    @JsonProperty("coffeeBean")
+    @JsonIgnore
     private CoffeeBean coffeeBean;
 
     @ManyToOne
-    @JsonProperty("cafe")
+    @JsonIgnore
     private Cafe cafe;
 
 }

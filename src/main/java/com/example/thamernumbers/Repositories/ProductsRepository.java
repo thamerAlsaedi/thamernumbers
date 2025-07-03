@@ -10,5 +10,6 @@ public interface ProductsRepository extends JpaRepository<Product, Integer> {
     Product getProductsById(Integer id);
 
 
-    Optional<Object> findByNameAndCafeId(String name, Integer id);
+     Optional<Product> findByNameAndCafeId(String name, Integer cafeId);
+
 }
